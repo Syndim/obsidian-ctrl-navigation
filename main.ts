@@ -187,7 +187,7 @@ class CtrlNavigationSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Enabled")
 			.setDesc(
-				"Whether to enable mapping `Ctrl-J` to down arrow and `Ctrl-K` to up arrow for suggestions and command list",
+				"Whether to enable mapping `Ctrl-N` to down arrow and `Ctrl-P` to up arrow for suggestions and command list",
 			)
 			.addToggle((toggle) => {
 				toggle
