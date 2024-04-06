@@ -27,7 +27,7 @@ function shouldMap() {
 function downKeyListener(e: KeyboardEvent) {
 	if (
 		shouldMap() &&
-		e.code == "KeyJ" &&
+		e.code == "KeyN" &&
 		(e.ctrlKey || e.metaKey) &&
 		!e.shiftKey
 	) {
@@ -45,7 +45,7 @@ function downKeyListener(e: KeyboardEvent) {
 function upKeyListener(e: KeyboardEvent) {
 	if (
 		shouldMap() &&
-		e.code == "KeyK" &&
+		e.code == "KeyP" &&
 		(e.ctrlKey || e.metaKey) &&
 		!e.shiftKey
 	) {
