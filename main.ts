@@ -1,15 +1,4 @@
-import {
-	App,
-	// Editor,
-	// MarkdownView,
-	// Modal,
-	// Notice,
-	Plugin,
-	PluginSettingTab,
-	Setting,
-} from "obsidian";
-
-// Remember to rename these classes and interfaces!
+import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 
 interface CtrlNavigationSettings {
 	enabled: boolean;
@@ -19,48 +8,66 @@ const DEFAULT_SETTINGS: CtrlNavigationSettings = {
 	enabled: true,
 };
 
+function shouldMap() {
+	const promptShowedUp =
+		document.activeElement &&
+		document.activeElement.hasClass("prompt-input");
+	if (promptShowedUp) {
+		return true;
+	}
+
+	const suggestionShowedUp = document.querySelector(".suggestion-container");
+	if (suggestionShowedUp) {
+		return true;
+	}
+
+	return false;
+}
+
+function downKeyListener(e: KeyboardEvent) {
+	if (
+		shouldMap() &&
+		e.code == "KeyJ" &&
+		(e.ctrlKey || e.metaKey) &&
+		!e.shiftKey
+	) {
+		e.preventDefault();
+		e.stopPropagation();
+		document.dispatchEvent(
+			new KeyboardEvent("keydown", {
+				key: "ArrowDown",
+				code: "ArrowDown",
+			}),
+		);
+	}
+}
+
+function upKeyListener(e: KeyboardEvent) {
+	if (
+		shouldMap() &&
+		e.code == "KeyK" &&
+		(e.ctrlKey || e.metaKey) &&
+		!e.shiftKey
+	) {
+		e.preventDefault();
+		e.stopPropagation();
+		document.dispatchEvent(
+			new KeyboardEvent("keydown", {
+				key: "ArrowUp",
+				code: "ArrowUp",
+			}),
+		);
+	}
+}
+
 export default class CtrlNavigationPlugin extends Plugin {
 	settings: CtrlNavigationSettings;
 
 	async onload() {
 		await this.loadSettings();
 
-		if (this.settings.enabled) {
-			document.addEventListener("keydown", (e) => {
-				if (
-					document.activeElement &&
-					document.activeElement.hasClass("prompt-input") &&
-					e.code == "KeyN" &&
-					(e.ctrlKey || e.metaKey) &&
-					!e.shiftKey
-				) {
-					e.preventDefault();
-					document.dispatchEvent(
-						new KeyboardEvent("keydown", {
-							key: "ArrowDown",
-							code: "ArrowDown",
-						}),
-					);
-				}
-			});
-			document.addEventListener("keydown", (e) => {
-				if (
-					document.activeElement &&
-					document.activeElement.hasClass("prompt-input") &&
-					e.code == "KeyP" &&
-					(e.ctrlKey || e.metaKey) &&
-					!e.shiftKey
-				) {
-					e.preventDefault();
-					document.dispatchEvent(
-						new KeyboardEvent("keydown", {
-							key: "ArrowUp",
-							code: "ArrowUp",
-						}),
-					);
-				}
-			});
-		}
+		this.registerDomEvent(document, "keydown", downKeyListener);
+		this.registerDomEvent(document, "keydown", upKeyListener);
 
 		// This creates an icon in the left ribbon.
 		// const ribbonIconEl = this.addRibbonIcon(
@@ -177,7 +184,9 @@ class CtrlNavigationSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Enabled")
-			.setDesc("enabled")
+			.setDesc(
+				"Whether to enable mapping `Ctrl-J` to down arrow and `Ctrl-K` to up arrow for suggestions and command list",
+			)
 			.addToggle((toggle) => {
 				toggle
 					.setValue(this.plugin.settings.enabled)
