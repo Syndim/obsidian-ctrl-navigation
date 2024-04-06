@@ -66,8 +66,10 @@ export default class CtrlNavigationPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerDomEvent(document, "keydown", downKeyListener);
-		this.registerDomEvent(document, "keydown", upKeyListener);
+		if (this.settings.enabled) {
+			this.registerDomEvent(document, "keydown", downKeyListener);
+			this.registerDomEvent(document, "keydown", upKeyListener);
+		}
 
 		// This creates an icon in the left ribbon.
 		// const ribbonIconEl = this.addRibbonIcon(
